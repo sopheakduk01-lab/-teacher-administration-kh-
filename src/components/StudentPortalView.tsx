@@ -1173,13 +1173,19 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({
   const handleStartHomework = (hw: HomeworkTask) => {
     playStudentSound('click', soundMuted);
     const shuffledQuestions = (hw.questions || []).map((q) => {
-      if (q.options && q.options.length > 0) {
-        return {
-          ...q,
-          options: [...q.options].sort(() => Math.random() - 0.5),
-        };
-      }
-      return q;
+      const formattedOptions = (q.options || []).map((opt, optIdx) => {
+        if (typeof opt === 'string') {
+          return { text: opt, isCorrect: optIdx === q.correctIndex };
+        }
+        return opt as { text: string; isCorrect: boolean };
+      });
+      return {
+        id: q.id,
+        question: q.question,
+        options: [...formattedOptions].sort(() => Math.random() - 0.5),
+        explanation: q.explanation,
+        points: 1,
+      };
     });
     setActiveTakingItem({
       id: hw.id,
@@ -2028,6 +2034,15 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({
                       );
                     })}
                   </div>
+
+                  <div className="pt-4 flex justify-end">
+                    <button
+                      onClick={() => setActiveTakingItem(null)}
+                      className="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition active:scale-95 cursor-pointer"
+                    >
+                      ត្រឡប់ទៅទំព័រដើម
+                    </button>
+                  </div>
                 </div>
               ) : q ? (
                 /* Active Answering Question Screen */
@@ -2166,55 +2181,46 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({
                       );
                     })}
                   </div>
+
+                  {/* Inline Navigation Buttons inside Question Card - No Fixed Bottom Bar */}
+                  <div className="pt-4 mt-2 border-t border-slate-100 flex items-center justify-between gap-3">
+                    <button
+                      disabled={currentQIndex === 0}
+                      onClick={() => {
+                        playStudentSound('click', soundMuted);
+                        setCurrentQIndex((prev) => Math.max(0, prev - 1));
+                      }}
+                      className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 disabled:opacity-30 disabled:pointer-events-none text-slate-700 text-xs font-bold transition active:scale-95 cursor-pointer flex items-center gap-1"
+                    >
+                      <ChevronLeft className="w-4 h-4" /> <span>សំណួរមុន</span>
+                    </button>
+
+                    <div className="text-[11px] font-bold text-slate-500">
+                      សំណួរទី {currentQIndex + 1} / {questions.length}
+                    </div>
+
+                    {currentQIndex < questions.length - 1 ? (
+                      <button
+                        onClick={() => {
+                          playStudentSound('click', soundMuted);
+                          setCurrentQIndex((prev) => Math.min(questions.length - 1, prev + 1));
+                        }}
+                        className="px-5 py-2.5 rounded-xl bg-[#c2410c] hover:bg-[#9a3412] text-white text-xs font-bold shadow-md shadow-orange-600/20 transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
+                      >
+                        <span>បន្ទាប់</span> <ChevronRight className="w-4 h-4" />
+                      </button>
+                    ) : (
+                      <button
+                        onClick={handleSubmitActiveExam}
+                        className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 transition flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer"
+                      >
+                        <CheckCircle2 className="w-4 h-4" /> <span>បញ្ជូនចម្លើយ (Submit)</span>
+                      </button>
+                    )}
+                  </div>
                 </div>
               ) : null}
             </div>
-          </div>
-
-          {/* Fixed Bottom Controls Bar - Always Visible and Docked at bottom */}
-          <div className="shrink-0 border-t border-slate-200 bg-white/95 backdrop-blur-md px-4 py-3.5 flex items-center justify-between gap-3 shadow-md z-20">
-            {isQuizSubmitted && quizResultScore ? (
-              <div className="w-full flex justify-end">
-                <button
-                  onClick={() => setActiveTakingItem(null)}
-                  className="w-full sm:w-auto px-6 py-2.5 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-600/30 transition active:scale-95 cursor-pointer"
-                >
-                  ត្រឡប់ទៅទំព័រដើម
-                </button>
-              </div>
-            ) : q ? (
-              <>
-                <button
-                  disabled={currentQIndex === 0}
-                  onClick={() => {
-                    playStudentSound('click', soundMuted);
-                    setCurrentQIndex((prev) => Math.max(0, prev - 1));
-                  }}
-                  className="px-5 py-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 disabled:opacity-40 text-slate-700 text-xs font-bold transition active:scale-95 cursor-pointer"
-                >
-                  ← មុន
-                </button>
-
-                {currentQIndex < questions.length - 1 ? (
-                  <button
-                    onClick={() => {
-                      playStudentSound('click', soundMuted);
-                      setCurrentQIndex((prev) => Math.min(questions.length - 1, prev + 1));
-                    }}
-                    className="px-6 py-2.5 rounded-2xl bg-[#c2410c] hover:bg-[#9a3412] text-white text-xs font-bold shadow-md shadow-orange-600/20 transition flex items-center gap-1.5 active:scale-95 cursor-pointer"
-                  >
-                    <span>បន្ទាប់</span> <ChevronRight className="w-4 h-4" />
-                  </button>
-                ) : (
-                  <button
-                    onClick={handleSubmitActiveExam}
-                    className="px-7 py-2.5 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold shadow-lg shadow-emerald-600/30 transition flex items-center gap-1.5 animate-pulse active:scale-95 cursor-pointer"
-                  >
-                    <CheckCircle2 className="w-4 h-4" /> <span>បញ្ជូនចម្លើយ (Submit)</span>
-                  </button>
-                )}
-              </>
-            ) : null}
           </div>
         </motion.div>
       </div>
@@ -2942,7 +2948,7 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({
                           ) : (
                             <button
                               onClick={() => {
-                                handleStartBuiltinExam(item.raw);
+                                handleStartBuiltinExam(item.raw as any);
                               }}
                               className="w-full py-2.5 px-4 bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold rounded-2xl text-xs shadow-sm shadow-indigo-600/20 hover:shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer"
                             >
@@ -3684,7 +3690,7 @@ export const StudentPortalView: React.FC<StudentPortalViewProps> = ({
                   playStudentSound('correct', soundMuted);
                   const selectedExam = allAvailableExams.find((e) => e.title === quiz.title) || allAvailableExams[0];
                   if (selectedExam) {
-                    handleStartBuiltinExam(selectedExam);
+                    handleStartBuiltinExam(selectedExam as any);
                   } else {
                     onShowToast(`បានចូលរួមលេងកម្រងសំណួរ៖ ${quiz.title}`);
                     setActivePortalTab('online_exam');
