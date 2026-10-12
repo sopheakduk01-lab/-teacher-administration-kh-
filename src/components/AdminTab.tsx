@@ -299,9 +299,10 @@ export const AdminTab: React.FC<AdminTabProps> = ({
 
   const activeAcademicYearValue = currentYear || teacher.academicYear || getActiveAcademicYear();
 
+  // Banner Theme System (5 Theme Presets: Royal Purple, Digital Tech, Khmer Traditional, Emerald Nature, National Ruby)
   const [bannerThemeId, setBannerThemeId] = useState<BannerThemeId>(() => getSavedBannerTheme());
   const [isBannerThemeModalOpen, setIsBannerThemeModalOpen] = useState<boolean>(false);
-  const activeBannerTheme = BANNER_THEMES[bannerThemeId] || BANNER_THEMES.classic_royal || Object.values(BANNER_THEMES)[0];
+  const activeBannerTheme = BANNER_THEMES[bannerThemeId] || BANNER_THEMES.royal_purple;
 
   const handleSelectBannerTheme = (themeId: BannerThemeId) => {
     setBannerThemeId(themeId);
@@ -5323,7 +5324,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                             setEditingInventory(i);
                             setEditInvName(i.name);
                             setEditInvQty(i.qty);
-                            setEditInvCondition(i.condition as any);
+                            setEditInvCondition(i.condition);
                             setEditInvCategory(i.category || 'សម្ភារថ្នាក់រៀន');
                             setIsEditInventoryOpen(true);
                           }}
