@@ -92,7 +92,7 @@ import {
   getThemeBackgroundCss,
   getKhmerGoogleFontsLinkHtml,
 } from '../utils/customPrintFont';
-import { getKhmerCombinedDate, toKhmerNum } from '../utils/khmerDate';
+import { getKhmerCombinedDate, toKhmerNum, getKhmerDateDisplay } from '../utils/khmerDate';
 import { BANNER_THEMES, BannerThemeId, getSavedBannerTheme, saveBannerTheme } from '../utils/bannerThemes';
 import { ThemeAnimatedDecorations } from './ThemeAnimatedDecorations';
 import { motion, AnimatePresence } from 'motion/react';
@@ -299,10 +299,9 @@ export const AdminTab: React.FC<AdminTabProps> = ({
 
   const activeAcademicYearValue = currentYear || teacher.academicYear || getActiveAcademicYear();
 
-  // Banner Theme System (5 Theme Presets: Royal Purple, Digital Tech, Khmer Traditional, Emerald Nature, National Ruby)
   const [bannerThemeId, setBannerThemeId] = useState<BannerThemeId>(() => getSavedBannerTheme());
   const [isBannerThemeModalOpen, setIsBannerThemeModalOpen] = useState<boolean>(false);
-  const activeBannerTheme = BANNER_THEMES[bannerThemeId] || BANNER_THEMES.royal_purple;
+  const activeBannerTheme = BANNER_THEMES[bannerThemeId] || BANNER_THEMES.classic_royal || Object.values(BANNER_THEMES)[0];
 
   const handleSelectBannerTheme = (themeId: BannerThemeId) => {
     setBannerThemeId(themeId);
@@ -2013,27 +2012,6 @@ export const AdminTab: React.FC<AdminTabProps> = ({
           {/* 1.2 Attendance Marker (Direct App Attendance & WikiSchool & PLP Portal) */}
           {subSec1 === 'attendance' && (() => {
             const currentDayAttendance = attendance[selectedAttendanceDate] || {};
-
-            const getKhmerDateDisplay = (dateStr: string) => {
-              try {
-                const [y, m, d] = dateStr.split('-').map(Number);
-                const dateObj = new Date(y, m - 1, d);
-                const khmerDays = ['អាទិត្យ', 'ច័ន្ទ', 'អង្គារ', 'ពុធ', 'ព្រហស្បតិ៍', 'សុក្រ', 'សៅរ៍'];
-                const khmerMonths = [
-                  'មករា', 'កុម្ភៈ', 'មីនា', 'មេសា', 'ឧសភា', 'មិថុនា',
-                  'កក្កដា', 'សីហា', 'កញ្ញា', 'តុលា', 'វិច្ឆិកា', 'ធ្នូ'
-                ];
-                const toKhmerNum = (n: number) => {
-                  const khmerDigits = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
-                  return String(n).split('').map(c => khmerDigits[Number(c)] || c).join('');
-                };
-                const dayName = khmerDays[dateObj.getDay()];
-                const monthName = khmerMonths[m - 1];
-                return `ថ្ងៃ${dayName} ទី${toKhmerNum(d)} ខែ${monthName} ឆ្នាំ${toKhmerNum(y)}`;
-              } catch {
-                return dateStr;
-              }
-            };
 
             const handleShiftAttendanceDate = (days: number) => {
               try {
@@ -5324,7 +5302,7 @@ export const AdminTab: React.FC<AdminTabProps> = ({
                             setEditingInventory(i);
                             setEditInvName(i.name);
                             setEditInvQty(i.qty);
-                            setEditInvCondition(i.condition);
+                            setEditInvCondition(i.condition as any);
                             setEditInvCategory(i.category || 'សម្ភារថ្នាក់រៀន');
                             setIsEditInventoryOpen(true);
                           }}

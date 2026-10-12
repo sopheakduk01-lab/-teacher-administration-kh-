@@ -761,7 +761,7 @@ export const EnglishGrade6InteractiveViewer: React.FC<EnglishGrade6InteractiveVi
                 )}
 
                 <div className="space-y-3">
-                  {currentUnit.writing.tasks.map((task, idx) => {
+                  {currentUnit.writing?.tasks?.map((task, idx) => {
                     const val = writingInputs[idx] || '';
                     const isSubmitted = val.length > 0;
 
@@ -805,14 +805,16 @@ export const EnglishGrade6InteractiveViewer: React.FC<EnglishGrade6InteractiveVi
               <div className="bg-white/90 p-3 rounded-2xl border border-amber-200/70 space-y-1">
                 <strong className="text-amber-900 block font-bold">📚 ពាក្យគន្លឹះ (Key Words) ៖</strong>
                 <p className="text-slate-700 leading-relaxed">
-                  {currentUnit.remember.vocabList.join(' • ')}
+                  {currentUnit.remember?.vocabList?.length
+                    ? currentUnit.remember.vocabList.join(' • ')
+                    : currentUnit.vocabulary.map((v) => v.word).slice(0, 5).join(' • ')}
                 </p>
               </div>
 
               <div className="bg-white/90 p-3 rounded-2xl border border-amber-200/70 space-y-1">
                 <strong className="text-amber-900 block font-bold">📐 រូបមន្តវេយ្យាករណ៍ (Grammar Point) ៖</strong>
                 <p className="text-slate-700 leading-relaxed font-medium">
-                  {currentUnit.remember.grammarSummary}
+                  {currentUnit.remember?.grammarSummary || currentUnit.grammarFocusKh || currentUnit.grammarFocusEn}
                 </p>
               </div>
             </div>

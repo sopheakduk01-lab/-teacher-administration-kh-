@@ -18,6 +18,7 @@ import { HEALTH_EDUCATION_SECTIONS, ALL_HEALTH_LESSONS_PACKAGES } from '../data/
 import { EnglishGrade6InteractiveViewer } from './EnglishGrade6InteractiveViewer';
 import { English40ExamModal } from './English40ExamModal';
 import { ENGLISH_GRADE_6_UNITS } from '../data/englishGrade6Data';
+import { ScienceLesson1InteractiveViewer } from './ScienceLesson1InteractiveViewer';
 import { initialQuizzes } from '../data/initialData';
 import { PLPTabletBanner } from './PLPTabletBanner';
 import { PdfCustomizerModal } from './PdfCustomizerModal';
@@ -226,6 +227,8 @@ export const HomeTab: React.FC<HomeTabProps> = ({
   const [isEnglishInteractiveOpen, setIsEnglishInteractiveOpen] = useState<boolean>(false);
   const [isEnglishExamOpen, setIsEnglishExamOpen] = useState<boolean>(false);
   const [selectedEnglishUnitIndex, setSelectedEnglishUnitIndex] = useState<number>(0);
+  const [isScienceLesson1Open, setIsScienceLesson1Open] = useState<boolean>(false);
+  const [scienceLesson1InitialTab, setScienceLesson1InitialTab] = useState<'hero' | 'dispersal' | 'adaptation' | 'defense' | 'lab' | 'match' | 'quiz'>('hero');
   const [showFishingGameModal, setShowFishingGameModal] = useState<boolean>(false);
   const [showVijjaNavaGameModal, setShowVijjaNavaGameModal] = useState<boolean>(false);
   const [showEnglishGameModal, setShowEnglishGameModal] = useState<boolean>(false);
@@ -269,6 +272,21 @@ export const HomeTab: React.FC<HomeTabProps> = ({
       if (!list.some((q) => q.id === item.id || q.title === item.title)) {
         list.unshift(item);
       }
+    }
+
+    // 5. Ensure Science Lesson 1 40Q Exam is present
+    const scienceLesson1Quiz: Quiz = {
+      id: 'quiz-science-lesson-1-plant-adaptation',
+      title: 'វិទ្យាសាស្ត្រ ថ្នាក់ទី៦ ៖ មេរៀនទី១ ការសម្របខ្លួនរបស់រុក្ខជាតិ',
+      subject: 'វិទ្យាសាស្ត្រ',
+      grade: 'ថ្នាក់ទី ៦',
+      questionCount: 40,
+      isPublic: true,
+      imageUrl: 'https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=600',
+      questions: []
+    };
+    if (!list.some((q) => q.id === scienceLesson1Quiz.id || q.title === scienceLesson1Quiz.title)) {
+      list.unshift(scienceLesson1Quiz);
     }
 
     return list;
@@ -1545,6 +1563,81 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                   </div>
                 </div>
               ))}
+
+            {/* Science Grade 6 Interactive Lesson 1 Card (MoEYS) */}
+            {(selectedSubjectFilter === 'all' || selectedSubjectFilter === 'វិទ្យាសាស្ត្រ') && (
+              <div
+                key="science-lesson-1"
+                className="min-w-[285px] sm:min-w-[325px] max-w-[325px] bg-white rounded-3xl border border-emerald-300 overflow-hidden shadow-sm hover:-translate-y-1 transition duration-200 group shrink-0 flex flex-col justify-between"
+              >
+                <div>
+                  <div className="relative h-40 overflow-hidden bg-gradient-to-tr from-emerald-950 via-teal-900 to-emerald-800">
+                    <img
+                      src="https://images.unsplash.com/photo-1518531933037-91b2f5f229cc?w=600"
+                      alt="ការសម្របខ្លួនរបស់រុក្ខជាតិ"
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-500 opacity-80"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-950/90 via-emerald-900/40 to-transparent" />
+                    <div className="absolute top-3 left-3 flex items-center gap-2">
+                      <span className="w-9 h-9 rounded-xl bg-white/20 backdrop-blur-md border border-white/30 flex items-center justify-center text-xl shadow-lg">
+                        🌿
+                      </span>
+                      <span className="text-[10px] font-black px-2 py-0.5 rounded-lg bg-amber-400 text-slate-950 shadow-xs uppercase tracking-wider">
+                        វិទ្យាសាស្ត្រ ថ្នាក់ទី ៦
+                      </span>
+                    </div>
+                    <div className="absolute bottom-3 left-3 right-3">
+                      <h3 className="font-bold text-white text-sm leading-tight font-moul drop-shadow-md line-clamp-1">
+                        មេរៀនទី ១ ៖ ការសម្របខ្លួនរបស់រុក្ខជាតិ
+                      </h3>
+                      <p className="text-[10px] text-teal-200 mt-0.5 font-bold drop-shadow-sm">
+                        ជំពូកទី ១ &bull; ទំព័រ ២-៧ &bull; ៤០ សំណួរ QCM
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="p-4 space-y-3">
+                    <p className="text-[11px] text-slate-600 line-clamp-2 leading-relaxed min-h-[32px]">
+                      ស្វែងយល់ពីការពង្រាយគ្រាប់ ការសម្របតាមជម្រក (ទឹក ព្រៃ វាលខ្សាច់) ការការពារខ្លួន មន្ទីរពិសោធន៍រំហួតទឹក និងល្បែងផ្គូផ្គង។
+                    </p>
+                    <div className="flex items-center gap-1.5 flex-wrap text-[9px] font-bold text-emerald-900 bg-emerald-50/70 p-2 rounded-xl border border-emerald-100">
+                      <span className="flex items-center gap-1"><Sparkles className="w-2.5 h-2.5 text-amber-500" /> ៧ ផ្នែកអន្តរកម្ម</span>
+                      <span className="text-slate-300">•</span>
+                      <span className="flex items-center gap-1"><Layers className="w-2.5 h-2.5 text-teal-600" /> ពិសោធន៍រំហួតទឹក</span>
+                      <span className="text-slate-300">•</span>
+                      <span className="flex items-center gap-1 text-emerald-800"><Award className="w-2.5 h-2.5 text-emerald-600" /> ៤០ QCM ពេញលេញ</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-4 pt-0 grid grid-cols-2 gap-2">
+                  <button
+                    onClick={() => {
+                      if (!hasCarouselDragged) {
+                        setScienceLesson1InitialTab('hero');
+                        setIsScienceLesson1Open(true);
+                      }
+                    }}
+                    className="w-full py-2.5 bg-gradient-to-r from-emerald-600 via-teal-600 to-cyan-700 text-white rounded-xl font-bold text-[11px] hover:from-emerald-500 hover:to-teal-600 transition shadow-sm active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-amber-300" />
+                    <span>រៀនអន្តរកម្ម</span>
+                  </button>
+                  <button
+                    onClick={() => {
+                      if (!hasCarouselDragged) {
+                        setScienceLesson1InitialTab('quiz');
+                        setIsScienceLesson1Open(true);
+                      }
+                    }}
+                    className="w-full py-2.5 bg-gradient-to-r from-slate-900 to-emerald-950 text-white rounded-xl font-bold text-[11px] hover:from-slate-800 hover:to-emerald-900 transition shadow-sm active:scale-95 flex items-center justify-center gap-1.5 cursor-pointer border border-emerald-500/20"
+                  >
+                    <Award className="w-3.5 h-3.5 text-amber-400" />
+                    <span>ប្រឡង ៤០ QCM</span>
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         ) : activeContentType === 'exams' ? (
           <div
@@ -1597,6 +1690,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                 const isEnglish = (quiz.subject || '').includes('អង់គ្លេស') || (quiz.subject || '').toLowerCase().includes('english') || quiz.id.includes('english');
                 const isHealth = (quiz.subject || '').includes('សុខភាព') || (quiz.subject || '').toLowerCase().includes('health') || quiz.id.includes('health');
                 const isMathLesson = quiz.id.startsWith('quiz-math-lesson') || (quiz.id.startsWith('quiz-math') && quiz.title.includes('មេរៀន'));
+                const isScienceLesson = quiz.id.includes('science-lesson-1') || quiz.title.includes('ការសម្របខ្លួនរបស់រុក្ខជាតិ');
 
                 return (
                   <div
@@ -1620,13 +1714,13 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                         <div className={`absolute top-3 left-3 text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-md flex items-center gap-1.5 backdrop-blur-md border border-white/20 ${
                           isEnglish
                             ? 'bg-blue-600/95'
-                            : isHealth
+                            : isHealth || isScienceLesson
                             ? 'bg-emerald-600/95'
                             : isMathLesson
                             ? 'bg-indigo-600/95'
                             : 'bg-purple-900/95'
                         }`}>
-                          <span>{isEnglish ? '🔤' : isHealth ? '🏥' : isMathLesson ? '📐' : '★'}</span>
+                          <span>{isEnglish ? '🔤' : isHealth ? '🏥' : isScienceLesson ? '🌿' : isMathLesson ? '📐' : '★'}</span>
                           <span>{quiz.subject || 'វិញ្ញាសា'}</span>
                         </div>
                       </div>
@@ -1652,6 +1746,11 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                           {isMathLesson && (
                             <span className="px-2 py-0.5 rounded-lg bg-indigo-50 text-indigo-800 border border-indigo-200 flex items-center gap-1">
                               <Award className="w-3 h-3 text-indigo-600" /> ៤០ សំណួរគន្លឹះ
+                            </span>
+                          )}
+                          {isScienceLesson && (
+                            <span className="px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-800 border border-emerald-200 flex items-center gap-1">
+                              <Award className="w-3 h-3 text-emerald-600" /> ៤០ សំណួរពេញលេញ
                             </span>
                           )}
                         </div>
@@ -1689,7 +1788,10 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                         <button
                           onClick={() => {
                             if (!hasCarouselDragged) {
-                              if (isEnglish) {
+                              if (isScienceLesson) {
+                                setScienceLesson1InitialTab('quiz');
+                                setIsScienceLesson1Open(true);
+                              } else if (isEnglish) {
                                 setIsEnglishExamOpen(true);
                               } else if (isHealth) {
                                 const hMatch = quiz.id.match(/health-lesson-(\d+)/i);
@@ -1712,7 +1814,7 @@ export const HomeTab: React.FC<HomeTabProps> = ({
                           className={`px-3.5 py-2 text-white rounded-xl font-bold text-xs transition shadow-xs active:scale-95 flex items-center gap-1.5 cursor-pointer ${
                             isEnglish
                               ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:to-indigo-600 shadow-blue-500/20'
-                              : isHealth
+                              : isHealth || isScienceLesson
                               ? 'bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-700 hover:from-emerald-500 hover:to-teal-600 shadow-emerald-500/20'
                               : isMathLesson
                               ? 'bg-gradient-to-r from-indigo-600 via-blue-600 to-indigo-700 hover:from-indigo-500 hover:to-blue-600 shadow-indigo-500/20'
@@ -1988,6 +2090,14 @@ export const HomeTab: React.FC<HomeTabProps> = ({
         <English40ExamModal
           isOpen={isEnglishExamOpen}
           onClose={() => setIsEnglishExamOpen(false)}
+          onShowToast={onShowToast}
+        />
+
+        {/* Modal for Interactive Science Grade 6 Lesson 1 Viewer (Plant Adaptation, Lab & 40 QCM) */}
+        <ScienceLesson1InteractiveViewer
+          isOpen={isScienceLesson1Open}
+          onClose={() => setIsScienceLesson1Open(false)}
+          initialTab={scienceLesson1InitialTab}
           onShowToast={onShowToast}
         />
 
